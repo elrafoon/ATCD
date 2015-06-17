@@ -2187,3 +2187,26 @@ project(Missing_Svc_Conf_Test) : acetest {
     Missing_Svc_Conf_Test.cpp
   }
 }
+
+project(Bug_4151_Regression_Test_DLL) : acelib {
+  libout       = .
+  sharedname   = Bug_4151_Regression_Test_DLL
+
+  Source_Files {
+    Bug_4151_Regression_Test_DLL.cpp
+  }
+  Header_Files {
+  }
+  Resource_Files {
+  }
+}
+
+project(Bug_4151_Regression_Test) : acetest {
+  after  += Bug_4151_Regression_Test_DLL
+  exename = Bug_4151_Regression_Test
+  Source_Files {
+    Bug_4151_Regression_Test.cpp
+  }
+}
+
+
