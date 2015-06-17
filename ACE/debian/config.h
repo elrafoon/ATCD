@@ -26,6 +26,8 @@
 #define __ACE_INLINE__
 #endif
 
+#define ACE_HAS_TIMED_MESSAGE_BLOCKS 1
+
 #include "config-linux.h"
 #endif // __FreeBSD_version
 #endif /* ACE_CONFIG_H_INCLUDED */
