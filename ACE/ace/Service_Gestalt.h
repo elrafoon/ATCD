@@ -217,6 +217,9 @@ public:
   /// directives.
   int process_file (const ACE_TCHAR file[]);
 
+  /// Process an opened file containing a list of service configuration
+  /// directives.
+  int process_fp (const ACE_TCHAR file[], FILE *fp);
   /**
    * Locate an entry with @a name in the table.  If @a ignore_suspended
    * is set then only consider services marked as resumed.  If the

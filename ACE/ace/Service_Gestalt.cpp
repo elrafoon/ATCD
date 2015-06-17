@@ -920,6 +920,42 @@ ACE_Service_Gestalt::process_file (const ACE_TCHAR file[])
 }
 
 int
+ACE_Service_Gestalt::process_fp (const ACE_TCHAR file[], FILE *fp)
+{
+  ACE_TRACE ("ACE_Service_Gestalt::process_fp");
+
+  // To avoid recursive processing of the same file and the same repository
+  // we maintain an implicit stack of dummy "services" named after the file
+  // being processed. Anytime we have to open a new file, we then can check
+  // to see if it is not already being processed by searching for a dummy
+  // service with a matching name.
+  if (this->repo_->find (file, 0, 0) >=0)
+    {
+      ACELIB_DEBUG ((LM_WARNING,
+                  ACE_TEXT ("ACE (%P|%t) Configuration file %s is currently")
+                  ACE_TEXT (" being processed. Ignoring recursive process_file().\n"),
+                  file));
+      return 0;
+    }
+
+  // Register a dummy service as a forward decl, using the file name as name.
+  // The entry will be automaticaly removed once the thread exits this block.
+  ACE_Service_Type_Dynamic_Guard recursion_guard (*this->repo_,
+                                                  file);
+
+  /*
+   * @TODO: Test with ACE_USES_CLASSIC_SVC_CONF turned off!
+   */
+#if (ACE_USES_CLASSIC_SVC_CONF == 1)
+  ACE_Svc_Conf_Param f (this, fp);
+  return this->process_directives_i (&f);
+#else
+  ACE_OS::last_error(ENOTSUP);
+  return -1;
+#endif /* ACE_USES_CLASSIC_SVC_CONF == 1 */
+}
+
+int
 ACE_Service_Gestalt::process_directive (const ACE_TCHAR directive[])
 {
   ACE_TRACE ("ACE_Service_Gestalt::process_directive");
