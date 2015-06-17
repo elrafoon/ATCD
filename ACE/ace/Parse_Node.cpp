@@ -34,11 +34,13 @@ ACE_Stream_Node::apply (ACE_Service_Gestalt *config, int &yyerrno)
 {
   ACE_TRACE ("ACE_Stream_Node::apply");
 
+  int yyerrno_entry = yyerrno;	// save yyerrno on entry, to have a value to compare with
+
   const ACE_Service_Type *sst = this->node_->record (config);
   if (sst == 0)
     const_cast<ACE_Static_Node *> (this->node_)->apply (config, yyerrno);
 
-  if (yyerrno != 0) return;
+  if (yyerrno != yyerrno_entry) return;
 
   sst = this->node_->record (config);
   ACE_Stream_Type *st =
@@ -65,7 +67,7 @@ ACE_Stream_Node::apply (ACE_Service_Gestalt *config, int &yyerrno)
       if (mst == 0)
         const_cast<ACE_Static_Node *> (module)->apply (config, yyerrno);
 
-      if (yyerrno != 0)
+      if (yyerrno != yyerrno_entry)
         {
           if (ACE::debug ())
             {
